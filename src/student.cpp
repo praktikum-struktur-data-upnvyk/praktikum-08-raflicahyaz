@@ -82,7 +82,32 @@ void clear(Node*& root) {
 // =============================================================================
 
 bool insert(Node*& root, int nilai) {
-    return false;
+    if (root == nullptr) {
+        root = new Node{nilai, nullptr, nullptr};
+        return true;
+    }
+
+    Node* current = root;
+
+    while (true) {
+        if (nilai == current->data) {
+            return false;
+        }
+
+        if (nilai < current->data) {
+            if (current->left == nullptr) {
+                current->left = new Node{nilai, nullptr, nullptr};
+                return true;
+            }
+            current = current->left;
+        } else {
+            if (current->right == nullptr) {
+                current->right = new Node{nilai, nullptr, nullptr};
+                return true;
+            }
+            current = current->right;
+        }
+    }
 }
 
 // =============================================================================
@@ -113,6 +138,20 @@ bool insert(Node*& root, int nilai) {
 // =============================================================================
 
 const Node* cari(const Node* root, int nilai) {
+    const Node* current = root;
+
+    while (current != nullptr) {
+        if (nilai == current->data) {
+            return current;
+        }
+
+        if (nilai < current->data) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+    }
+
     return nullptr;
 }
 
@@ -146,8 +185,18 @@ const Node* cari(const Node* root, int nilai) {
 // =============================================================================
 
 const Node* minimum(const Node* root) {
-    return nullptr;
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    const Node* current = root;
+    while (current->left != nullptr) {
+        current = current->left;
+    }
+
+    return current;
 }
+
 
 // =============================================================================
 // SOAL 2b — hapus                                                      30 poin
@@ -209,7 +258,34 @@ const Node* minimum(const Node* root) {
 // =============================================================================
 
 bool hapus(Node*& root, int nilai) {
-    return false;
+    if (root == nullptr) {
+        return false;
+    }
+
+    if (nilai < root->data) {
+        return hapus(root->left, nilai);
+    }
+    if (nilai > root->data) {
+        return hapus(root->right, nilai);
+    }
+
+    Node* target = root;
+
+    if (root->left == nullptr) {
+        root = root->right;
+        delete target;
+        return true;
+    }
+    if (root->right == nullptr) {
+        root = root->left;
+        delete target;
+        return true;
+    }
+
+    const Node* successor = minimum(root->right);
+    root->data = successor->data;
+
+    return hapus(root->right, successor->data);
 }
 
 // =============================================================================
@@ -250,7 +326,19 @@ bool hapus(Node*& root, int nilai) {
 // =============================================================================
 
 const Node* termahalTerbeli(const Node* root, int uang) {
-    return nullptr;
+    const Node* current = root;
+    const Node* kandidat = nullptr;
+
+    while (current != nullptr) {
+        if (current->data <= uang) {
+            kandidat = current;
+            current = current->right;
+        } else {
+            current = current->left;
+        }
+    }
+
+    return kandidat;
 }
 
 // =============================================================================
